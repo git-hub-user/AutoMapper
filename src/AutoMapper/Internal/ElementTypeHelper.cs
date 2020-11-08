@@ -7,46 +7,39 @@ namespace AutoMapper.Internal
 {
     public static class ElementTypeHelper
     {
-        public static Type GetElementType(Type enumerableType) => GetElementTypes(enumerableType, null)[0];
-
-        public static Type[] GetElementTypes(Type enumerableType, ElementTypeFlags flags = ElementTypeFlags.None) => 
-            GetElementTypes(enumerableType, null, flags);
-
-        public static Type[] GetElementTypes(Type enumerableType, IEnumerable enumerable,
-            ElementTypeFlags flags = ElementTypeFlags.None)
+        public static Type GetElementType(Type enumerableType) => GetEnumerableElementTypes(enumerableType, null)[0];
+        public static Type[] GetElementTypes(Type enumerableType, ElementTypeFlags flags = ElementTypeFlags.None) => GetElementTypes(enumerableType, null, flags);
+        public static Type[] GetElementTypes(Type enumerableType, IEnumerable enumerable, ElementTypeFlags flags = ElementTypeFlags.None)
         {
-            if (enumerableType.HasElementType)
-            {
-                return new[] {enumerableType.GetElementType()};
-            }
-
             var iDictionaryType = enumerableType.GetDictionaryType();
             if (iDictionaryType != null && flags.HasFlag(ElementTypeFlags.BreakKeyValuePair))
             {
-                return iDictionaryType.GetTypeInfo().GenericTypeArguments;
+                return iDictionaryType.GenericTypeArguments;
             }
-
             var iReadOnlyDictionaryType = enumerableType.GetReadOnlyDictionaryType();
             if (iReadOnlyDictionaryType != null && flags.HasFlag(ElementTypeFlags.BreakKeyValuePair))
             {
-                return iReadOnlyDictionaryType.GetTypeInfo().GenericTypeArguments;
+                return iReadOnlyDictionaryType.GenericTypeArguments;
             }
-
+            return GetEnumerableElementTypes(enumerableType, enumerable);
+        }
+        public static Type[] GetEnumerableElementTypes(Type enumerableType, IEnumerable enumerable)
+        {
+            if (enumerableType.HasElementType)
+            {
+                return new[] { enumerableType.GetElementType() };
+            }
             var iEnumerableType = enumerableType.GetIEnumerableType();
             if (iEnumerableType != null)
             {
-                return iEnumerableType.GetTypeInfo().GenericTypeArguments;
+                return iEnumerableType.GenericTypeArguments;
             }
-
-            if (typeof(IEnumerable).IsAssignableFrom(enumerableType))
+            if (enumerableType.IsEnumerableType())
             {
                 var first = enumerable?.Cast<object>().FirstOrDefault();
-
-                return new[] {first?.GetType() ?? typeof(object)};
+                return new[] { first?.GetType() ?? typeof(object) };
             }
-
-            throw new ArgumentException($"Unable to find the element type for type '{enumerableType}'.",
-                nameof(enumerableType));
+            throw new ArgumentException($"Unable to find the element type for type '{enumerableType}'.", nameof(enumerableType));
         }
     }
     public enum ElementTypeFlags

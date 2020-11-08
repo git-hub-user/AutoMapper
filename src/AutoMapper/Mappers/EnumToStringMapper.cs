@@ -17,10 +17,9 @@ namespace AutoMapper.Mappers
             Expression contextExpression)
         {
             var sourceType = sourceExpression.Type;
-            var toStringCall = Expression.Call(sourceExpression, typeof(object).GetDeclaredMethod("ToString"));
+            var toStringCall = Expression.Call(sourceExpression, ExpressionFactory.ObjectToString);
             var switchCases = new List<SwitchCase>();
-            var enumNames = sourceType.GetDeclaredMembers();
-            foreach (var memberInfo in enumNames.Where(x => x.IsStatic()))
+            foreach (var memberInfo in sourceType.GetFields())
             {
                 var attribute = memberInfo.GetCustomAttribute(typeof(EnumMemberAttribute)) as EnumMemberAttribute;
                 if (attribute?.Value != null)

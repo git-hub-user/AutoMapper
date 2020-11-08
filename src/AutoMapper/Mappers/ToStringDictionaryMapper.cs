@@ -12,7 +12,7 @@ namespace AutoMapper.Mappers
     public class ToStringDictionaryMapper : IObjectMapper
     {
         private static readonly MethodInfo MembersDictionaryMethodInfo =
-            typeof(ToStringDictionaryMapper).GetDeclaredMethod(nameof(MembersDictionary));
+            typeof(ToStringDictionaryMapper).GetStaticMethod(nameof(MembersDictionary));
 
         public bool IsMatch(in TypePair context) => typeof(IDictionary<string, object>).IsAssignableFrom(context.DestinationType);
 

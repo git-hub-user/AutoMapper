@@ -18,7 +18,7 @@ namespace AutoMapper.Mappers
             if(destExpression.Type.IsInterface)
             {
                 var listType = typeof(ICollection<>).MakeGenericType(ElementTypeHelper.GetElementType(destExpression.Type));
-                destExpression = Convert(destExpression, listType);
+                destExpression = ExpressionFactory.ToType(destExpression, listType);
             }
             return MapCollectionExpression(configurationProvider, profileMap, memberMap, sourceExpression,
                 destExpression, contextExpression, typeof(List<>), MapItemExpr);

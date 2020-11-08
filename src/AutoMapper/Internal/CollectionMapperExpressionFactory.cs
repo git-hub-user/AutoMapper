@@ -48,7 +48,7 @@ namespace AutoMapper.Internal
             var destinationCollectionType = typeof(ICollection<>).MakeGenericType(destinationElementType);
             if (!destinationCollectionType.IsAssignableFrom(destExpression.Type))
                 destinationCollectionType = typeof(IList);
-            var addMethod = destinationCollectionType.GetDeclaredMethod("Add");
+            var addMethod = destinationCollectionType.GetMethod("Add");
 
             Expression destination, assignNewExpression;
 
@@ -58,11 +58,11 @@ namespace AutoMapper.Internal
             var overMaxDepth = contextExpression.OverMaxDepth(memberMap?.TypeMap);
             if (overMaxDepth != null)
             {
-                addItems = Condition(overMaxDepth, Empty(), addItems);
+                addItems = Condition(overMaxDepth, ExpressionFactory.Empty, addItems);
             }
             var mapExpr = Block(addItems, destination);
 
-            var clearMethod = destinationCollectionType.GetDeclaredMethod("Clear");
+            var clearMethod = destinationCollectionType.GetMethod("Clear");
             var checkNull =
                 Block(new[] { newExpression, passedDestination },
                     Assign(passedDestination, destExpression),
@@ -84,13 +84,13 @@ namespace AutoMapper.Internal
                 if(memberMap?.UseDestinationValue == true)
                 {
                     destination = passedDestination;
-                    assignNewExpression = Empty();
+                    assignNewExpression = ExpressionFactory.Empty;
                 }
                 else
                 {
                     destination = newExpression;
                     var createInstance = passedDestination.Type.NewExpr(ifInterfaceType);
-                    var shouldCreateDestination = Equal(passedDestination, Constant(null));
+                    var shouldCreateDestination = Equal(passedDestination, Null);
                     if (memberMap?.CanBeSet == true)
                     {
                         var isReadOnly = Property(ToType(passedDestination, destinationCollectionType), "IsReadOnly");

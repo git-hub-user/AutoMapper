@@ -33,7 +33,7 @@ namespace AutoMapper.Mappers
             return destinationArray;
         }
 
-        private static readonly MethodInfo MapMethodInfo = typeof(MultidimensionalArrayMapper).GetDeclaredMethod(nameof(Map));
+        private static readonly MethodInfo MapMethodInfo = typeof(MultidimensionalArrayMapper).GetStaticMethod(nameof(Map));
 
         public bool IsMatch(in TypePair context)
         {

@@ -10,11 +10,8 @@ namespace AutoMapper.Mappers
 
     public class ArrayCopyMapper : ArrayMapper
     {
-        private static readonly Expression<Action> ArrayCopyExpression = () => Array.Copy(default, default, default(long));
-        private static readonly Expression<Func<Array, long>> ArrayLengthExpression = arr => arr.LongLength;
-
-        private static readonly MethodInfo ArrayCopyMethod = ArrayCopyExpression.Method();
-        private static readonly PropertyInfo ArrayLengthProperty = (PropertyInfo) ArrayLengthExpression.GetMember();
+        private static readonly MethodInfo ArrayCopyMethod = typeof(Array).GetMethod("Copy", new[] { typeof(Array), typeof(Array), typeof(long) });
+        private static readonly PropertyInfo ArrayLengthProperty = typeof(Array).GetProperty("LongLength");
 
         public override bool IsMatch(in TypePair context) =>
             context.DestinationType.IsArray
@@ -45,7 +42,7 @@ namespace AutoMapper.Mappers
                 dest
             );
 
-            return Condition(Equal(sourceExpression, Constant(null)), valueIfNullExpr, mapExpr);
+            return Condition(Equal(sourceExpression, ExpressionFactory.Null), valueIfNullExpr, mapExpr);
 
         }
     }

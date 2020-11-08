@@ -11,7 +11,7 @@ namespace AutoMapper.Mappers
 {
     public class FromStringDictionaryMapper : IObjectMapper
     {
-        private static readonly MethodInfo MapDynamicMehod = typeof(FromStringDictionaryMapper).GetDeclaredMethod(nameof(MapDynamic)); 
+        private static readonly MethodInfo MapDynamicMehod = typeof(FromStringDictionaryMapper).GetStaticMethod(nameof(MapDynamic));
         public bool IsMatch(in TypePair context) => typeof(StringDictionary).IsAssignableFrom(context.SourceType);
         public Expression MapExpression(IGlobalConfiguration configurationProvider, ProfileMap profileMap, IMemberMap memberMap, 
             Expression sourceExpression, Expression destExpression, Expression contextExpression) =>

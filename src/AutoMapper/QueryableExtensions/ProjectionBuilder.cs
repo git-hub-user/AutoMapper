@@ -202,7 +202,7 @@ namespace AutoMapper.QueryableExtensions.Impl
         }
         private static AutoMapperMappingException CannotMap(IMemberMap memberMap, Type sourceType) => new AutoMapperMappingException(
             $"Unable to create a map expression from {memberMap.SourceMember?.DeclaringType?.Name}.{memberMap.SourceMember?.Name} ({sourceType}) to {memberMap.DestinationType.Name}.{memberMap.DestinationName} ({memberMap.DestinationType})",
-            null, memberMap.TypeMap.Types, memberMap.TypeMap, memberMap);
+            null, memberMap);
         abstract class ParameterExpressionVisitor : ExpressionVisitor
         {
             public static Expression SetParameters(object parameters, Expression expression)
